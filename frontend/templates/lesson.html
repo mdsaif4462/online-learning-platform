@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <aside class="col-lg-3 order-lg-2">
+    <div class="enroll-box">
+      <a class="small" href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a>
+      <ol class="lesson-list mt-3 mb-0">
+        {% for l in lessons %}
+        <li class="{{ 'current' if l.id == lesson.id }}">
+          <a href="{{ url_for('lesson_view', course_id=course.id, lesson_id=l.id) }}">{{ l.title }}</a>
+          {% if l.id in completed %}<span class="badge text-bg-success ms-1">Done</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </aside>
+
+  <article class="col-lg-9 order-lg-1">
+    <h1 class="page-title">{{ lesson.title }}</h1>
+    <p class="text-muted">{{ lesson.duration_minutes }} minutes</p>
+    <div class="lesson-body">
+      {% for para in lesson.content.split('\n\n') %}<p>{{ para }}</p>{% endfor %}
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      {% if prev_lesson %}
+        <a class="btn btn-outline-secondary" href="{{ url_for('lesson_view', course_id=course.id, lesson_id=prev_lesson.id) }}">Previous lesson</a>
+      {% endif %}
+      <form method="post" action="{{ url_for('complete_lesson', course_id=course.id, lesson_id=lesson.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-primary" type="submit">
+          {{ 'Mark complete and continue' if next_lesson else 'Mark complete and finish course' }}
+        </button>
+      </form>
+    </div>
+  </article>
+</div>
+{% endblock %}

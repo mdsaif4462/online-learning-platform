@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "_macros.html" import course_card %}
+{% block content %}
+<section class="hero">
+  <h1>Learn the skill, then build with it.</h1>
+  <p class="lead">Short lessons in programming, data science, databases and web development. Track your progress and get suggestions based on what you study.</p>
+  <form class="hero-search" action="{{ url_for('courses') }}" method="get">
+    <input class="form-control form-control-lg" type="search" name="q" placeholder="Search for Python, SQL, Flask..." aria-label="Search courses">
+    <button class="btn btn-primary btn-lg" type="submit">Find courses</button>
+  </form>
+  <div class="chips">
+    {% for c in categories %}
+      <a class="chip" href="{{ url_for('courses', category=c) }}">{{ c }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+{% if recommended %}
+<section class="mt-5">
+  <h2 class="section-title">Picked for you</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-3">
+    {% for course in recommended %}{{ course_card(course) }}{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="mt-5">
+  <h2 class="section-title">Popular courses</h2>
+  {% if popular %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {% for course in popular %}{{ course_card(course) }}{% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No courses yet. Run <code>flask --app app seed</code> to add sample courses.</p>
+  {% endif %}
+</section>
+{% endblock %}

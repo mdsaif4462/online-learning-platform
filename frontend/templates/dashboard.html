@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_macros.html" import course_card %}
+{% block title %}My learning - Lumen Learn{% endblock %}
+{% block content %}
+<h1 class="page-title">My learning</h1>
+
+{% if progress %}
+<div class="row row-cols-1 row-cols-md-2 g-3">
+  {% for item in progress %}
+  <div class="col">
+    <article class="course-card cat-{{ item.course.category|lower|replace(' ', '-') }} h-100">
+      <div class="course-meta"><span>{{ item.course.category }}</span><span class="level">{{ item.percent }}% complete</span></div>
+      <h2 class="h5"><a href="{{ url_for('course_detail', course_id=item.course.id) }}">{{ item.course.title }}</a></h2>
+      <div class="progress my-3" role="progressbar" aria-label="Progress" aria-valuenow="{{ item.percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" style="width: {{ item.percent }}%"></div>
+      </div>
+      <div class="course-foot">
+        <span>{{ item.done }} of {{ item.total }} lessons</span>
+        {% if item.next_lesson %}
+          <a href="{{ url_for('lesson_view', course_id=item.course.id, lesson_id=item.next_lesson.id) }}">Continue: {{ item.next_lesson.title }}</a>
+        {% else %}
+          <span>Finished</span>
+        {% endif %}
+      </div>
+    </article>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">You have not enrolled in anything yet. <a href="{{ url_for('courses') }}">Browse courses</a></p>
+{% endif %}
+
+{% if recommended %}
+<section class="mt-5">
+  <h2 class="section-title">Recommended next</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-3">
+    {% for course in recommended %}{{ course_card(course) }}{% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

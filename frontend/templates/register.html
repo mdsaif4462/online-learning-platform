@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Create account - Lumen Learn{% endblock %}
+{% block content %}
+<div class="auth-box">
+  <h1 class="page-title">Create your account</h1>
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+      <label class="form-label" for="name">Full name</label>
+      <input class="form-control" id="name" name="name" value="{{ name or '' }}" required autofocus>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="email">Email</label>
+      <input class="form-control" id="email" type="email" name="email" value="{{ email or '' }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-control" id="password" type="password" name="password" minlength="8" required aria-describedby="pwHelp">
+      <div id="pwHelp" class="form-text">At least 8 characters.</div>
+    </div>
+    <button class="btn btn-primary w-100" type="submit">Create account</button>
+  </form>
+  <p class="mt-3 small">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+</div>
+{% endblock %}

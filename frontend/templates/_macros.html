@@ -1,0 +1,21 @@
+{% macro course_card(course, percent=None) %}
+<div class="col">
+  <article class="course-card cat-{{ course.category|lower|replace(' ', '-') }} position-relative h-100">
+    <div class="course-meta">
+      <span>{{ course.category }}</span>
+      <span class="level">{{ course.level }}</span>
+    </div>
+    <h3 class="h5"><a class="stretched-link" href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a></h3>
+    <p class="text-muted mb-3">{{ course.description|truncate(110) }}</p>
+    {% if percent is not none %}
+    <div class="progress" role="progressbar" aria-label="Progress" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar" style="width: {{ percent }}%"></div>
+    </div>
+    {% endif %}
+    <div class="course-foot">
+      <span>{{ course.instructor }}</span>
+      <span>{{ course.duration_hours }} hours</span>
+    </div>
+  </article>
+</div>
+{% endmacro %}

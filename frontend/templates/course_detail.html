@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import course_card %}
+{% block title %}{{ course.title }} - Lumen Learn{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="course-meta mb-2"><span>{{ course.category }}</span><span class="level">{{ course.level }}</span></div>
+    <h1 class="page-title">{{ course.title }}</h1>
+    <p class="lead">{{ course.description }}</p>
+    <p class="text-muted">Taught by {{ course.instructor }}. {{ course.duration_hours }} hours, {{ course.lessons|length }} lessons.</p>
+
+    <h2 class="section-title mt-4">Lessons</h2>
+    <ol class="lesson-list">
+      {% for lesson in course.lessons %}
+      <li>
+        {% if enrolled %}
+          <a href="{{ url_for('lesson_view', course_id=course.id, lesson_id=lesson.id) }}">{{ lesson.title }}</a>
+          {% if lesson.id in completed %}<span class="badge text-bg-success ms-2">Done</span>{% endif %}
+        {% else %}
+          <span>{{ lesson.title }}</span>
+        {% endif %}
+        <span class="text-muted small ms-2">{{ lesson.duration_minutes }} min</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <aside class="col-lg-4">
+    <div class="enroll-box">
+      {% if enrolled %}
+        <p class="mb-3">You are enrolled in this course.</p>
+        {% if course.lessons %}
+        <a class="btn btn-primary w-100" href="{{ url_for('lesson_view', course_id=course.id, lesson_id=course.lessons[0].id) }}">Open lessons</a>
+        {% endif %}
+      {% elif current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('enroll', course_id=course.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-primary w-100" type="submit">Enroll for free</button>
+        </form>
+      {% else %}
+        <p class="mb-3">Log in to enroll and track your progress.</p>
+        <a class="btn btn-primary w-100" href="{{ url_for('login', next=request.path) }}">Log in to enroll</a>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+
+{% if similar %}
+<section class="mt-5">
+  <h2 class="section-title">Learners also take</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-3">
+    {% for c in similar %}{{ course_card(c) }}{% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import course_card %}
+{% block title %}Courses - Lumen Learn{% endblock %}
+{% block content %}
+<h1 class="page-title">All courses</h1>
+<form class="filters row g-2 mb-4" method="get">
+  <div class="col-md-5">
+    <input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Search by title, topic or tag" aria-label="Search">
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="category" aria-label="Category">
+      <option value="">All categories</option>
+      {% for c in categories %}<option value="{{ c }}" {{ 'selected' if c == category }}>{{ c }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" name="level" aria-label="Level">
+      <option value="">Any level</option>
+      {% for l in ['Beginner', 'Intermediate', 'Advanced'] %}<option value="{{ l }}" {{ 'selected' if l == level }}>{{ l }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-grid"><button class="btn btn-primary" type="submit">Filter</button></div>
+</form>
+
+{% if courses %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+  {% for course in courses %}{{ course_card(course) }}{% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No courses match those filters. <a href="{{ url_for('courses') }}">Clear filters</a></p>
+{% endif %}
+{% endblock %}
